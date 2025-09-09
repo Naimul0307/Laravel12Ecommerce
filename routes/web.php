@@ -1,19 +1,41 @@
 <?php
 
+use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\admin\LoginController as AdminLoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('admin',function(){
-    return view('admin.auth.login');
+Route::group(['prefix' => 'account'],function(){
+
+    Route::group(['middleware' => 'guest'],function(){
+        Route::get('login',[LoginController::class, 'index'])->name('account.login');
+        Route::get('register',[LoginController::class, 'register'])->name('account.register');
+        Route::post('process-register',[LoginController::class, 'processRegister'])->name('account.processRegister');
+        Route::post('auth',[LoginController::class, 'authenticate'])->name('account.auth');
+    });
+
+    Route::group(['middleware' => 'auth'],function(){
+        Route::get('logout',[LoginController::class, 'logout'])->name('account.logout');
+        Route::get('dashboard',[DashboardController::class,'index'])->name('account.dashboard');
+    });
 });
 
-Route::get('dashboard',function(){
-    return view('admin.dashboard');
-});
 
-Route::get('admin/admin/list',function(){
-    return view('admin.admin.list');
+Route::group(['prefix' => 'admin'],function(){
+
+    Route::group(['middleware' => 'admin.guest'],function(){
+        Route::get('login',[AdminLoginController::class, 'index'])->name('admin.login');
+        Route::post('auth',[AdminLoginController::class, 'authenticate'])->name('admin.auth');
+    });
+
+    Route::group(['middleware' => 'admin.auth'],function(){
+        Route::get('logout',[AdminLoginController::class, 'logout'])->name('admin.logout');
+        Route::get('dashboard',[AdminDashboardController::class,'index'])->name('admin.dashboard');
+    });
 });
