@@ -32,9 +32,6 @@
 
 <!-- OPTIONAL SCRIPTS -->
 <script src="{{ asset('admin_assets/plugins/chart.js/Chart.min.js') }}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{ asset('admin_assets/dist/js/demo.js') }}"></script>
-
 @yield('script')
 </body>
 </html>
